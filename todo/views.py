@@ -1,8 +1,10 @@
 from django.shortcuts import render,redirect,get_object_or_404
-
+from django.contrib.auth.decorators import login_required
 from .models import Tasks
 from .forms import TodoForm
+
 # Create your views here.
+@login_required
 def index(request):
     todos = Tasks.objects.all()
     context = {
@@ -10,7 +12,9 @@ def index(request):
     }
     return render(request, 'todo/todo_list.html' , context)
 
+
 # create Task Form
+@login_required  # ✅ This line must be present
 def createTodo(request):
     if request.method == "POST":
         form = TodoForm(request.POST)
@@ -27,6 +31,7 @@ def createTodo(request):
  
 
 # update Task Form
+@login_required
 def updateTodo(request,pk):
     # if request.user.is_authenticated:
     object = get_object_or_404(Tasks , pk=pk)
@@ -44,6 +49,7 @@ def updateTodo(request,pk):
 
 
 # delete Task Form
+@login_required
 def deleteTodo(request,pk):
     todo = get_object_or_404(Tasks , pk=pk)
     todo.delete()
